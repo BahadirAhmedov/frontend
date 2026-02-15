@@ -128,6 +128,14 @@ const LandingRoute = () => {
                         >
                             Регистрация
                         </Button>
+                        <Button
+                            variant="secondary"
+                            size="lg"
+                            onClick={() => navigate("/app/chat")}
+                            className="transform transition-transform hover:scale-105"
+                        >
+                            Перейти в чат
+                        </Button>
                     </div>
                 </div>
             </div>

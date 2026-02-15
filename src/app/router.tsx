@@ -47,15 +47,19 @@ export const createAppRouter = (queryClient: QueryClient) =>
         {
             path: paths.app.root.path,
             element: (
-                <ProtectedRoute>
+                 <ProtectedRoute>
                     <AppRoot />
-                </ProtectedRoute>
+                 </ProtectedRoute>
             ),
             ErrorBoundary: AppRootErrorBoundary,
             children: [
                 {
                     path: paths.app.spaces.path,
                     lazy: () => import("./routes/app/spaces").then(convert(queryClient)),
+                },
+                {
+                    path: "chat",
+                    lazy: () => import("./routes/app/chat").then(convert(queryClient)),
                 },
             ],
         },
