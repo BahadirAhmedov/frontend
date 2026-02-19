@@ -1,112 +1,16 @@
-# BulletProof App
+# React + Vite
 
-## 📋 Обзор проекта
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-**BulletProof App** — это веб-приложение, построенное на современном стеке технологий с акцентом на типобезопасность, производительность и удобство разработки.
+Currently, two official plugins are available:
 
----
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-## 🛠 Стек технологий
+## React Compiler
 
-### Ядро
+The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
 
--**React 18** + **TypeScript** — UI и типизация
+## Expanding the ESLint configuration
 
--**Vite** — сборка и dev-сервер
-
--**ESBuild** — быстрая компиляция
-
-### Маршрутизация
-
--**React Router v6** — клиентская маршрутизация
-
-- Файл конфигурации: `src/config/paths.ts`
-
-### Управление состоянием
-
--**TanStack Query (React Query)** — серверное состояние
-
-- Конфигурация: `src/lib/react-query.ts`
-
-### Сетевой слой
-
--**Axios** — HTTP-клиент
-
-- Перехватчики (interceptors) для auth и error handling
-- Файл: `src/lib/api-client.ts`
-
-### UI и стилизация
-
--**Tailwind CSS** — утилитарные классы
-
--**shadcn/ui** — компонентная библиотека
-
--**Radix UI** — доступные примитивы
-
--**Lucide React** — иконки
-
-### Утилиты
-
--**clsx** + **tailwind-merge** — управление классами
-
--**dayjs** — форматирование дат
-
----
-
-## 📁 Структура проекта
-
-```
-
-src/
-├── app/                    # Точка входа и маршруты
-│   ├── index.tsx          # App компонент с провайдерами
-│   └── routes/            # Роуты приложения
-├── components/
-│   ├── layouts/           # Layout компоненты
-│   ├── ui/                # UI-kit (shadcn/ui)
-│   └── errors/            # Error boundaries
-├── config/                # Конфигурация (paths, env)
-├── lib/                   # Библиотеки и утилиты
-├── hooks/                 # Кастомные хуки
-├── types/                 # TypeScript типы
-├── utils/                 # Утилитарные функции
-└── assets/                # Статические ресурсы
-
-```
-
----
-
-## 🚀 Быстрый старт
-
-```bash
-
-# Установка зависимостей
-
-npm install
-
-
-# Запуск dev-сервера
-
-npm run dev
-
-
-# Сборка
-
-npm run build
-
-
-# Линтинг
-
-npm run lint
-
-```
-
----
-
-## 📚 Документация
-
-- [Архитектура компонентов](wiki/ARCHITECTURE.md)
-- [Работа с API](wiki/API.md)
-- [Роутинг и навигация](wiki/ROUTING.md)
-- [UI-компоненты](wiki/COMPONENTS.md)
-- [Утилиты и хелперы](wiki/UTILS.md)
+If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
