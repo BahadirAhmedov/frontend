@@ -9,6 +9,9 @@ import { ProtectedRoute } from "@/lib/auth";
 
 import { default as AppRoot, ErrorBoundary as AppRootErrorBoundary } from "./routes/app/root";
 
+// 👇 ВРЕМЕННО ОТКЛЮЧАЕМ ИМПОРТ ЧАТА
+// import ChatScreen from "@/features/chat/components/ChatScreen";
+
 type LazyModule = {
     clientLoader?: (client: QueryClient) => LoaderFunction;
     clientAction?: (client: QueryClient) => ActionFunction;
@@ -47,9 +50,9 @@ export const createAppRouter = (queryClient: QueryClient) =>
         {
             path: paths.app.root.path,
             element: (
-                 <ProtectedRoute>
+                <ProtectedRoute>
                     <AppRoot />
-                 </ProtectedRoute>
+                </ProtectedRoute>
             ),
             ErrorBoundary: AppRootErrorBoundary,
             children: [
@@ -57,10 +60,15 @@ export const createAppRouter = (queryClient: QueryClient) =>
                     path: paths.app.spaces.path,
                     lazy: () => import("./routes/app/spaces").then(convert(queryClient)),
                 },
-                {
-                    path: "chat",
-                    lazy: () => import("./routes/app/chat").then(convert(queryClient)),
-                },
+                // ВРЕМЕННО ОТКЛЮЧАЕМ ЧАТ
+                // {
+                //     path: "chat",
+                //     lazy: () => import("./routes/app/chat").then(convert(queryClient)),
+                // },
+                // {
+                //     path: "chat/:chatId",
+                //     element: <ChatScreen />,
+                // },
             ],
         },
         {

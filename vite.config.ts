@@ -33,6 +33,10 @@ export default defineConfig({
             "127.0.0.1",
             "fpin-projects.ru:1268",
         ],
+        headers: {
+            "Content-Security-Policy":
+                "default-src * 'unsafe-eval' 'unsafe-inline' data: blob:; script-src * 'unsafe-eval' 'unsafe-inline' data: blob:; style-src * 'unsafe-inline';",
+        },
     },
     preview: {
         port: 3000,
