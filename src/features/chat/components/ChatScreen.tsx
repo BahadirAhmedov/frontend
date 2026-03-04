@@ -81,6 +81,7 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ chatId, onBack }) => {
         return () => observer.disconnect();
     }, []);
 
+    // Загрузка истории сообщений
     useEffect(() => {
         if (!chatId) return;
 
@@ -90,9 +91,9 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ chatId, onBack }) => {
             if (isMockChat) {
                 setTimeout(() => {
                     const mockData = mockMessages[chatId as keyof typeof mockMessages] || [];
-                    // Сортируем заглушки по времени (старые сверху, новые снизу)
-                    const sortedMock = [...mockData].sort((a, b) =>
-                        new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+                    const sortedMock = [...mockData].sort(
+                        (a, b) =>
+                            new Date(a.created_at).getTime() - new Date(b.created_at).getTime(),
                     );
                     setMessages(sortedMock);
                     setLoading(false);
@@ -100,9 +101,9 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ chatId, onBack }) => {
             } else {
                 try {
                     const data = await chatApi.getMessages(chatId);
-                    // Сортируем сообщения по времени (старые сверху, новые снизу)
-                    const sortedMessages = [...(data.items || [])].sort((a, b) =>
-                        new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+                    const sortedMessages = [...(data.items || [])].sort(
+                        (a, b) =>
+                            new Date(a.created_at).getTime() - new Date(b.created_at).getTime(),
                     );
                     setMessages(sortedMessages);
                 } catch (err) {
@@ -116,16 +117,47 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ chatId, onBack }) => {
         loadMessages();
     }, [chatId, isMockChat]);
 
+    // 👇 ПЕРИОДИЧЕСКИЙ ОПРОС НОВЫХ СООБЩЕНИЙ (каждые 3 секунды)
+    useEffect(() => {
+        if (!chatId || isMockChat) return;
+
+        const interval = setInterval(async () => {
+            try {
+                const data = await chatApi.getMessages(chatId);
+                const sortedMessages = [...(data.items || [])].sort(
+                    (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime(),
+                );
+
+                // Проверяем, есть ли новые сообщения
+                if (sortedMessages.length !== messages.length) {
+                    setMessages(sortedMessages);
+                } else if (sortedMessages.length > 0 && messages.length > 0) {
+                    const lastNew = sortedMessages[sortedMessages.length - 1];
+                    const lastOld = messages[messages.length - 1];
+                    if (lastNew.id !== lastOld.id) {
+                        setMessages(sortedMessages);
+                    }
+                }
+            } catch (err) {
+                console.error("Ошибка при опросе:", err);
+            }
+        }, 3000); // каждые 3 секунды
+
+        return () => clearInterval(interval);
+    }, [chatId, messages, isMockChat]);
+
+    // Отправка сообщения
     const handleSend = async () => {
         if (!inputText.trim() || !chatId || sending || isMockChat) return;
 
         setSending(true);
         try {
             await chatApi.sendMessage(chatId, inputText);
+
+            // После отправки сразу перезапрашиваем все сообщения
             const data = await chatApi.getMessages(chatId);
-            // Сортируем после отправки
-            const sortedMessages = [...(data.items || [])].sort((a, b) =>
-                new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+            const sortedMessages = [...(data.items || [])].sort(
+                (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime(),
             );
             setMessages(sortedMessages);
             setInputText("");
@@ -195,14 +227,11 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ chatId, onBack }) => {
                             key={msg.id}
                             className={`flex ${msg.sender_id.toString() === currentUserId ? "justify-end" : "justify-start"}`}
                         >
-                            {/* Аватарка (для чужих сообщений) */}
                             {msg.sender_id.toString() !== currentUserId && (
                                 <div className="w-8 h-8 mr-2 bg-gray-300 dark:bg-gray-700 rounded-full flex items-center justify-center text-xs font-bold self-end mb-1 text-gray-700 dark:text-gray-300 transition-colors duration-500">
                                     {msg.sender_id.toString().charAt(0)}
                                 </div>
                             )}
-
-                            {/* Текст сообщения */}
                             <div
                                 className={`max-w-[85%] md:max-w-[65%] flex flex-col p-3 ${
                                     msg.sender_id.toString() === currentUserId
